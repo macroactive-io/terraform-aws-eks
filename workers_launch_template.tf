@@ -372,8 +372,11 @@ resource "aws_launch_template" "workers_launch_template" {
     "key_name",
     local.workers_group_defaults["key_name"],
   )
-  user_data = base64encode(
-    local.launch_template_userdata_rendered[count.index],
+
+  user_data = (
+    ! startswith(lookup(var.worker_groups_launch_template[count.index], "ami_type", ""), "AL2023")
+    ? base64encode(local.launch_template_userdata_rendered[count.index])
+    : module.user_data[count.index].user_data
   )
 
   ebs_optimized = lookup(
