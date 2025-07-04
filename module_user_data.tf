@@ -21,7 +21,14 @@ module "user_data" {
   # bootstrap_extra_args = var.bootstrap_extra_args
   # user_data_template_path = var.user_data_template_path
 
-  cloudinit_pre_nodeadm = try(each.value.cloudinit_pre_nodeadm, null)
-  cloudinit_post_nodeadm = try(each.value.cloudinit_post_nodeadm, null)
+  cloudinit_pre_nodeadm = try(
+    var.workers_group_defaults.cloudinit_pre_nodeadm,
+    try(each.value.cloudinit_pre_nodeadm, null)
+  )
+
+  cloudinit_post_nodeadm = try(
+    var.workers_group_defaults.cloudinit_post_nodeadm,
+    try(each.value.cloudinit_post_nodeadm, null)
+  )
 }
 
